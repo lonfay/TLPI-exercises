@@ -29,10 +29,10 @@ int locate(int fd, int nline, char* buf){
     off_t offseek;
     int len = 0;
     int offset, whence=SEEK_END,
-        i = 0,
-        numline = 0,
-        line = 1, //如果行数多于buffer，重复往上增大offset
-        off2end = 0; //距文件结尾的偏移量
+            i = 0,
+            numline = 0,
+            line = 1, //如果行数多于buffer，重复往上增大offset
+            off2end = 0; //距文件结尾的偏移量
     char* ptr = NULL;
 
     /*检查文件*/
@@ -49,7 +49,7 @@ int locate(int fd, int nline, char* buf){
         offset = 0-BUF_SIZE; // 文件过大，直接跳到文件底部
         whence = SEEK_END;
     }
-    printf("%d %d\n", offset, (int)pstat.st_size);
+
 
     while((offseek = lseek(fd, line * offset, whence)) != -1){
         line++;
@@ -104,7 +104,7 @@ int main(int argc, char* argv[]){
     int c, lineNum=10, filed;
     char buf[BUF_SIZE];
 
-    if((c = getopt(argc, argv, "n:")) == -1){
+    if((c = getopt(argc, argv, "n:")) != -1){
         switch (c){
             case 'n':
                 lineNum = atoi(optarg);
@@ -119,7 +119,7 @@ int main(int argc, char* argv[]){
         printf("open %s failed!\n", argv[optind]);
         return -1;
     }
-    printd(filed, (locate(filed, -lineNum, buf)),buf);
+    printd(filed, (-locate(filed, lineNum, buf)),buf);
 
     if((close(filed) == 1)){
         printf("close failed.\n");
